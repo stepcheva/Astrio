@@ -2,17 +2,23 @@
 
 function searchCategory(&$categories, $id)
 {
-    foreach ($categories as $value) {
-        if ($value['id'] == intval($id)) {
-            return $value['title'];
-        } else {
-            if (is_array($value['children'])) {
-                return searchCategory($value['children'], $id);
-            }
-        }
-    }
-}
+    static $result;
+    
+    if (array_key_exists('id', $categories)) {
 
+        if ($categories['id'] == intval($id)) 
+            return $categories['title'];
+
+        if (array_key_exists('children', $categories)) 
+            $result = searchCategory($categories['children'], $id);
+        
+    } else {        
+        foreach ($categories as $value) 
+            $result = searchCategory($value, $id);
+    }
+    return ($result) ? $result : "Категория не найдена";
+}
+   
 $categories = array(
     array(
         'id' => 1,
@@ -41,5 +47,6 @@ $categories = array(
     ),
 );
 
-echo searchCategory($categories, 4);
-
+echo searchCategory($categories, 9);
+echo searchCategory($categories, 6);
+echo searchCategory($categories, 7);
